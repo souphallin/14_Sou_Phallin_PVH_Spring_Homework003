@@ -6,7 +6,7 @@ import com.example.springhomework003.model.request.EventRequest;
 import java.util.List;
 
 public interface EventService {
-    List<Event> getAllEvents();
+    List<Event> getAllEvents(Integer pageNo, Integer pageSize);
     Event getEventById(int id);
     Event deleteEventById(int id);
     Event addNewEvent(EventRequest eventRequest);

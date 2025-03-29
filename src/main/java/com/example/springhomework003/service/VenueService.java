@@ -6,7 +6,7 @@ import com.example.springhomework003.model.request.VenueRequest;
 import java.util.List;
 
 public interface VenueService {
-    List<Venue> getAllVenues();
+    List<Venue> getAllVenues(Integer pageNo, Integer pageSize);
     Venue getVenueById(int id);
     Venue addNewVenue(VenueRequest venueRequest);
     Venue deleteVenueById(int id);

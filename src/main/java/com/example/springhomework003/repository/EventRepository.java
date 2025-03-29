@@ -11,6 +11,8 @@ import java.util.List;
 public interface EventRepository {
     @Select("""
         select * from events
+        offset #{pageSize} * (#{pageNo} - 1)
+        limit #{pageSize}
     """)
     @Results(id = "getMapper", value = {
             @Result(property = "eventId", column = "event_id"),
@@ -21,7 +23,7 @@ public interface EventRepository {
             @Result(property = "attendee", column = "event_id",
                     many = @Many(select = "com.example.springhomework003.repository.AttendeeRepository.getAttendeeByEventId"))
     })
-    List<Event> getAllEvents();
+    List<Event> getAllEvents(Integer pageNo, Integer pageSize);
 
     @Select("""
         select * from events where event_id = #{id}
@@ -37,12 +39,13 @@ public interface EventRepository {
 
     @Select("""
         insert into events
-        values (default, #{request.event_name}, #{request.event_date}, #{request.venue_id}, #{request.attendee_id}) returning *
+        values (default, #{request.event_name}, #{request.event_date}, #{request.venue_id}) 
+        returning *
     """)
     Event addNewEvent(@Param("request") EventRequest eventRequest);
 
-    @Select("""
-        insert into event_attendee values (#{attendeeId}, #{eventId})
-    """)
-    Event addEventToEventAttendee(@Param("attendeeId") int attendeeId, @Param("venueId") int venueId);
+//    @Insert("""
+//        insert into event_attendee values (default, #{attendeeId}, #{eventId})
+//    """)
+//    Event addEventToEventAttendee(@Param("attendeeId") int attendeeId, @Param("venueId") int venueId);
 }

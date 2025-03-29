@@ -1,9 +1,11 @@
 package com.example.springhomework003.controller;
 
+import com.example.springhomework003.exception.NotFoundException;
 import com.example.springhomework003.model.entity.Venue;
 import com.example.springhomework003.model.request.VenueRequest;
 import com.example.springhomework003.model.response.ApiResponse;
 import com.example.springhomework003.service.VenueService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,10 @@ public class VenueController {
         this.venueService = venueService;
     }
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Venue>>> getAllVenues() {
+    public ResponseEntity<ApiResponse<List<Venue>>> getAllVenues(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
         ApiResponse<List<Venue>> response = ApiResponse.<List<Venue>>builder()
                 .message("Get All Venues Successfully!!!")
-                .payload(venueService.getAllVenues())
+                .payload(venueService.getAllVenues(pageNo, pageSize))
                 .status(HttpStatus.OK)
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -30,16 +32,14 @@ public class VenueController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Venue>> getVenueById(@PathVariable Integer id) {
-        ApiResponse<Venue> getVenueById = ApiResponse.<Venue>builder()
-                .message("Get Venue By ID Successfully!!!")
-                .payload(venueService.getVenueById(id))
-                .status(HttpStatus.OK)
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(getVenueById);
+        Venue venue = venueService.getVenueById(id);
+        if (venue == null) {
+            throw new NotFoundException("Venue " + id + " Not Found");
+        }
+        return new ResponseEntity<>(new ApiResponse<>(venue), HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<ApiResponse<Venue>> addNewVenue(@RequestBody VenueRequest venueRequest) {
+    public ResponseEntity<ApiResponse<Venue>> addNewVenue(@Valid @RequestBody VenueRequest venueRequest) {
         ApiResponse<Venue> response = ApiResponse.<Venue>builder()
                 .message("Add New Venue Successfully!!!")
                 .payload(venueService.addNewVenue(venueRequest))
@@ -50,22 +50,18 @@ public class VenueController {
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Venue>> deleteVenueById(@PathVariable Integer id) {
-        ApiResponse<Venue> response = ApiResponse.<Venue>builder()
-                .message("Delete Venue Successfully!!!")
-                .payload(venueService.deleteVenueById(id))
-                .status(HttpStatus.OK)
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        Venue venue = venueService.deleteVenueById(id);
+        if (venue == null) {
+            throw new NotFoundException("Venue " + id + " Not Found");
+        }
+        return new ResponseEntity<>(new ApiResponse<>(venue), HttpStatus.OK);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Venue>> updateVenueById(@PathVariable Integer id, @RequestBody VenueRequest venueRequest) {
-        ApiResponse<Venue> response = ApiResponse.<Venue>builder()
-                .message("Update Venue Successfully!!!")
-                .payload(venueService.updateVenueById(id, venueRequest))
-                .status(HttpStatus.OK)
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    public ResponseEntity<ApiResponse<Venue>> updateVenueById(@PathVariable Integer id, @Valid @RequestBody VenueRequest venueRequest) {
+        Venue venue = venueService.updateVenueById(id, venueRequest);
+        if (venue == null) {
+            throw new NotFoundException("Venue " + id + " Not Found");
+        }
+        return new ResponseEntity<>(new ApiResponse<>(venue), HttpStatus.OK);
     }
 }

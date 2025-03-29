@@ -18,9 +18,9 @@ create table events(
 );
 create table event_attendee(
     id serial primary key ,
-    event_id INTEGER not null references events(event_id)
+    event_id INTEGER references events(event_id)
         on delete set null on update cascade ,
-    attendee_id INTEGER not null references attendees(attendee_id)
+    attendee_id INTEGER references attendees(attendee_id)
         on delete set null on UPDATE cascade
 );
 
@@ -30,6 +30,7 @@ inner join event_attendee ea
 on a.attendee_id = ea.attendee_id
 where event_id = 2;
 
-drop table events;
+drop table event_attendee;
 
-insert into attendees values (default, 'JubJub', 'jubjub@gmail.com')
+insert into attendees values (default, 'JubJub', 'jubjub@gmail.com');
+delete from attendees where attendee_id = 4 returning *;

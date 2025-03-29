@@ -10,12 +10,14 @@ import java.util.List;
 public interface VenueRepository {
     @Select("""
         select * from venues
+        offset #{pageSize} * (#{pageNo} - 1)
+        limit #{pageSize}
     """)
     @Results(id= "getMapper", value = {
             @Result(property = "venueId", column = "venue_id"),
             @Result(property = "venueName", column = "venue_name")
     })
-    List<Venue> getAllVenues();
+    List<Venue> getAllVenues(Integer pageNo, Integer pageSize);
 
     @Select("""
         select * from venues where venue_id = #{id}

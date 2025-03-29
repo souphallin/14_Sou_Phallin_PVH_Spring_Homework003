@@ -16,8 +16,8 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
-    public List<Venue> getAllVenues() {
-        return venueRepository.getAllVenues();
+    public List<Venue> getAllVenues(Integer pageNo, Integer pageSize) {
+        return venueRepository.getAllVenues(pageNo, pageSize);
     }
 
     @Override
