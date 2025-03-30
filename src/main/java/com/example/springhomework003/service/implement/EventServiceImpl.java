@@ -32,7 +32,6 @@ public class EventServiceImpl implements EventService {
     }
     @Override
     public Event addNewEvent(EventRequest eventRequest) {
-//        return eventRepository.addNewEvent(eventRequest);
         Event event = eventRepository.addNewEvent(eventRequest);
         for (Integer attendeeId : eventRequest.getAttendee()){
             attendeeRepository.addEventAndAttendee(event.getEventId(), attendeeId);
@@ -41,7 +40,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event updateEventById(Integer id, EventRequest eventRequest) {
-        return eventRepository.updateEventById(id, eventRequest);
+    public Event updateEventById(Integer eventId, EventRequest eventRequest) {
+        Event event = eventRepository.updateEventById(eventId, eventRequest);
+        attendeeRepository.deleteEventAndAttendee(eventId);
+        for (Integer attendeeId : eventRequest.getAttendee()){
+            attendeeRepository.addEventAndAttendee(eventId, attendeeId);
+        }
+        return getEventById(event.getEventId());
     }
 }

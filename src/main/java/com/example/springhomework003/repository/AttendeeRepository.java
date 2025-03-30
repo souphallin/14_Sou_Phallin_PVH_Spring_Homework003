@@ -60,4 +60,9 @@ public interface AttendeeRepository {
         VALUES (#{eventId}, #{attendeeId}) returning *
     """)
     void addEventAndAttendee(Integer eventId, Integer attendeeId);
+
+    @Select("""
+        delete from event_attendee where event_id = #{eventId}
+    """)
+    void deleteEventAndAttendee(Integer eventId);
 }

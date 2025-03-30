@@ -39,4 +39,6 @@ public class AttendeeServiceImpl implements AttendeeService {
     public Attendee updateAttendee(int id, AttendeeRequest attendeeRequest) {
         return attendeeRepository.updateAttendee(id, attendeeRequest);
     }
+
+
 }
