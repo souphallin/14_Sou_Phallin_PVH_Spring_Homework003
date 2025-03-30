@@ -69,12 +69,5 @@ public class AttendeeController {
             throw new NotFoundException("Attendee id " + id + " Not Found!!!");
         }
         return new ResponseEntity<>(new ApiResponse<>(attendee), HttpStatus.OK);
-//        ApiResponse<Attendee> response = ApiResponse.<Attendee>builder()
-//                .message("Update Attendee Successfully!!!")
-//                .payload(attendeeService.updateAttendee(id, attendeeRequest))
-//                .status(HttpStatus.OK)
-//                .timestamp(LocalDateTime.now())
-//                .build();
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

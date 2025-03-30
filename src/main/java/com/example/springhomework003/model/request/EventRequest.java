@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,5 +20,5 @@ public class EventRequest {
     @NotBlank(message = "Please input the Venue ID!!!")
     private Integer venue;
     @NotBlank(message = "Please input the Attendee ID!!!")
-    private Integer attendee;
+    private List<Integer> attendee;
 }

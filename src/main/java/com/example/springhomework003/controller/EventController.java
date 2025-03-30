@@ -1,5 +1,6 @@
 package com.example.springhomework003.controller;
 
+import com.example.springhomework003.exception.NotFoundException;
 import com.example.springhomework003.model.entity.Event;
 import com.example.springhomework003.model.request.EventRequest;
 import com.example.springhomework003.model.response.ApiResponse;
@@ -31,23 +32,19 @@ public class EventController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<Event>> getEventById(@PathVariable Integer id) {
-        ApiResponse<Event> response = ApiResponse.<Event>builder()
-                .message("Get Event By ID Successfully!!!")
-                .payload(eventService.getEventById(id))
-                .status(HttpStatus.OK)
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        Event event = eventService.getEventById(id);
+        if (event == null) {
+            throw new NotFoundException("Event ID " + id + " Not Found");
+        }
+        return new ResponseEntity<>(new ApiResponse<>(event), HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Event>> deleteEventById(@PathVariable Integer id) {
-        ApiResponse<Event> response = ApiResponse.<Event>builder()
-                .message("Delete Event By ID Successfully!!!")
-                .payload(eventService.deleteEventById(id))
-                .status(HttpStatus.OK)
-                .timestamp(LocalDateTime.now())
-                .build();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        Event event = eventService.deleteEventById(id);
+        if (event == null) {
+            throw new NotFoundException("Event with id " + id + " not found");
+        }
+        return new ResponseEntity<>(new ApiResponse<>(event), HttpStatus.OK);
     }
     @PostMapping
     public ResponseEntity<ApiResponse<Event>> addNewEvent(@Valid @RequestBody EventRequest eventRequest) {
@@ -58,5 +55,13 @@ public class EventController {
                 .timestamp(LocalDateTime.now())
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Event>> updateEventById(@PathVariable Integer id, @RequestBody EventRequest eventRequest) {
+        Event event = eventService.updateEventById(id, eventRequest);
+        if (event == null) {
+            throw new NotFoundException("Event id " + id + " Not Found!!!");
+        }
+        return new ResponseEntity<>(new ApiResponse<>(event), HttpStatus.OK);
     }
 }

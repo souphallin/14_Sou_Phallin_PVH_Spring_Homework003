@@ -5,6 +5,7 @@ import com.example.springhomework003.model.entity.Event;
 import com.example.springhomework003.model.request.EventRequest;
 import org.apache.ibatis.annotations.*;
 
+import javax.swing.*;
 import java.util.List;
 
 @Mapper
@@ -29,7 +30,7 @@ public interface EventRepository {
         select * from events where event_id = #{id}
     """)
     @ResultMap("getMapper")
-    Event getEventById(int id);
+    Event getEventById(Integer id);
 
     @Select("""
         delete from events where event_id = #{id} returning *
@@ -38,14 +39,17 @@ public interface EventRepository {
     Event deleteEventById(int id);
 
     @Select("""
-        insert into events
-        values (default, #{request.event_name}, #{request.event_date}, #{request.venue_id}) 
+        insert into events (event_name, event_date, venue_id)
+        values (#{request.eventName}, #{request.eventDate}, #{request.venue}) 
         returning *
     """)
     Event addNewEvent(@Param("request") EventRequest eventRequest);
 
-//    @Insert("""
-//        insert into event_attendee values (default, #{attendeeId}, #{eventId})
-//    """)
-//    Event addEventToEventAttendee(@Param("attendeeId") int attendeeId, @Param("venueId") int venueId);
+    @Select("""
+        update events
+        set event_name = #{request.eventName}, event_date = #{request.eventDate}, venue_id = #{request.venue}
+        where event_id = #{id} returning *
+    """)
+    @ResultMap("getMapper")
+    Event updateEventById(Integer id, @Param("request") EventRequest eventRequest);
 }

@@ -54,4 +54,10 @@ public interface AttendeeRepository {
     """)
     @ResultMap("getMapper")
     Attendee getAttendeeByEventId(Integer eventId);
+
+    @Insert("""
+        INSERT INTO event_attendee (event_id, attendee_id)
+        VALUES (#{eventId}, #{attendeeId}) returning *
+    """)
+    void addEventAndAttendee(Integer eventId, Integer attendeeId);
 }
